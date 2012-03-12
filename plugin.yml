@@ -1,0 +1,5 @@
+authors: [Klezst]
+description: Allows slot reservation
+main: com.gmail.klezst.reserves.Reserves
+name: Reserves
+version: 1.0
