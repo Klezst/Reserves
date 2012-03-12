@@ -1,4 +1,5 @@
 authors: [Klezst]
+depend: [Vault]
 description: Allows slot reservation
 main: com.gmail.klezst.reserves.Reserves
 name: Reserves

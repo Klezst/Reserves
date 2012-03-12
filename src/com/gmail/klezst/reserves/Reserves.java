@@ -1,6 +1,8 @@
 package com.gmail.klezst.reserves;
 
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.milkbowl.vault.permission.Permission;
 
@@ -15,12 +17,22 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+/**
+ * Enables the reservation of player slots, in case the server is at max players.
+ * 
+ * @author Klezst
+ */
 public class Reserves extends JavaPlugin {
     
+    private static Logger logger = Logger.getLogger("Minecraft");
     private static Permission permission = null;
     
-    private Listener listener = new Listener()
-    {
+    /**
+     * Determines, if a player needs to be kicked.
+     * 
+     * @author Klezst
+     */
+    private Listener listener = new Listener() {
 	private final String permissionNode = "reserves";
 	
 	private HashMap<Player, Long> joinTimes = new HashMap<Player, Long>();
@@ -29,25 +41,24 @@ public class Reserves extends JavaPlugin {
 	@SuppressWarnings("unused")
 	@EventHandler
 	public void onPlayerPreLogin(PlayerLoginEvent event) {
-	    System.out.println("RAWRWARWASDFSADFAS");
 	    // Record join time, to determine who should be kicked.
 	    Player player = event.getPlayer();
 	    joinTimes.put(player, player.getPlayerTime());
 	    
+	    // Determine, if the server is full.
 	    Player[] players = server.getOnlinePlayers();
-	    if (players.length == server.getMaxPlayers()){
-		if (permission.has(player, permissionNode)){
+	    if (players.length == server.getMaxPlayers()) {
+		
+		if (permission.has(player, permissionNode)) {
 		    
 		    // Calculate the time each player has been connected to the server.
 		    HashMap<Player, Long> timeConnected = new HashMap<Player, Long>();
-		    for (Player connected : players)
-		    {
+		    for (Player connected : players) {
 			timeConnected.put(connected, connected.getPlayerTime() - joinTimes.get(connected));
 		    }
 		    
 		    // Sort players based on timeConnected in descending order.
-		    for (int i = 1; i < players.length; i++)
-		    {
+		    for (int i = 1; i < players.length; i++) {
 			int j = i;
 			while (j > 0 && timeConnected.get(players[j]) > timeConnected.get(players[j - 1])) {
 			    Player temp = players[j - 1];
@@ -58,9 +69,8 @@ public class Reserves extends JavaPlugin {
 			}
 		    }
 		    
-		    // Kick player who has been connected longest and does not have a slot reserved.
-		    for (Player connected : players)
-		    {
+		    // Kick the player who has been connected longest and does not have a slot reserved.
+		    for (Player connected : players) {
 			if (!permission.has(connected, permissionNode)) {
 			    connected.kickPlayer("A player with a reserved slot has connected. Sorry, the server is at maximum capacity.");
 			    break;
@@ -72,15 +82,13 @@ public class Reserves extends JavaPlugin {
     };
     
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args)
-    {
+    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 	return false;
     }
     
     @Override
-    public void onDisable()
-    {
-	
+    public void onDisable() {
+	log(Level.INFO, "Disabled");
     }
     
     @Override
@@ -88,6 +96,18 @@ public class Reserves extends JavaPlugin {
     {
 	setupPermissions();
 	this.getServer().getPluginManager().registerEvents(listener, this);
+	log(Level.INFO, "Enabled.");
+    }
+    
+    /**
+     * Logs a message.
+     * @param level The importance of the message.
+     * @param message The message to log.
+     * 
+     * @author Klezst
+     */
+    private void log(Level level, String message) {
+	logger.log(level, "[Reserves]" + message);
     }
     
     /**
@@ -95,8 +115,7 @@ public class Reserves extends JavaPlugin {
      * 
      * @author Vault
      */
-    private Boolean setupPermissions()
-    {
+    private Boolean setupPermissions() {
         RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
         if (permissionProvider != null) {
             permission = permissionProvider.getProvider();
