@@ -46,12 +46,11 @@ public class Reserves extends JavaPlugin {
 	    joinTimes.put(player, player.getPlayerTime());
 	    
 	    // Determine, if the server is full.
-	    Player[] players = server.getOnlinePlayers();
-	    if (players.length == server.getMaxPlayers()) {
-		
+	    if (event.getResult() == PlayerLoginEvent.Result.KICK_FULL) {
 		if (permission.has(player, permissionNode)) {
 		    
 		    // Calculate the time each player has been connected to the server.
+		    Player[] players = server.getOnlinePlayers();
 		    HashMap<Player, Long> timeConnected = new HashMap<Player, Long>();
 		    for (Player connected : players) {
 			timeConnected.put(connected, connected.getPlayerTime() - joinTimes.get(connected));
@@ -72,7 +71,8 @@ public class Reserves extends JavaPlugin {
 		    // Kick the player who has been connected longest and does not have a slot reserved.
 		    for (Player connected : players) {
 			if (!permission.has(connected, permissionNode)) {
-			    connected.kickPlayer("A player with a reserved slot has connected. Sorry, the server is at maximum capacity.");
+			    connected.kickPlayer("Sorry, the server is full; a player with a reserved slot logged in.");
+			    event.allow(); // Allow the player to join the server despite that it was full.
 			    break;
 			}
 		    }
