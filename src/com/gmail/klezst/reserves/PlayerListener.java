@@ -9,6 +9,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import bukkitutil.compatibility.Permission;
+
 /**
  * Determines, if a player needs to be kicked.
  * 
@@ -18,7 +20,7 @@ public class PlayerListener implements Listener {
     private final String permissionNode = "reserves";
 
     private LinkedList<Player> playerJoinOrder = new LinkedList<Player>();
-
+    
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
 	// Used to determine which player has been on the longest.
@@ -35,11 +37,11 @@ public class PlayerListener implements Listener {
     public void onPlayerPreLogin(PlayerLoginEvent event) {
 	// Determine, if the server is full && if the player has a reserved slot.
 	if (event.getResult() == PlayerLoginEvent.Result.KICK_FULL
-		&& Reserves.permission.has(event.getPlayer(), permissionNode)) {
+		&& Permission.has(event.getPlayer(), permissionNode)) {
 
 	    // Kick the player who has been connected longest and does not have a slot reserved.
 	    for (Player player : playerJoinOrder) {
-		if (!Reserves.permission.has(player, permissionNode)) {
+		if (!Permission.has(player, permissionNode)) {
 		    player.kickPlayer("Sorry, the server is full; a player with a reserved slot logged in.");
 		    event.allow(); // Allow the connecting player to join the server despite that it was full.
 		    break;
