@@ -1,5 +1,24 @@
+/*
+	Reserves
+	Copyright (C) 2011 Klezst
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 package com.gmail.klezst.reserves;
 
+import java.io.IOException;
 import java.util.logging.Level;
 
 import org.bukkit.command.Command;
@@ -33,6 +52,16 @@ public class Reserves extends BukkitUtilJavaPlugin {
 
     @Override
     public void onEnable() {
+	try {
+	    bukkitutil.util.IO.extract(this, "LICENSE.txt");
+	} catch (IOException e) {
+	    log(Level.SEVERE, "Error extracting resources; disabling.");
+	    e.printStackTrace();
+	    
+	    this.getServer().getPluginManager().disablePlugin(this);
+	    return;
+	}
+	
 	this.getServer().getPluginManager().registerEvents(listener, this);
 	
 	// Add any already logged in players to avoid kick invulnerability.
