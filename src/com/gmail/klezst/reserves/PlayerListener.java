@@ -19,7 +19,7 @@ import bukkitutil.compatibility.Permission;
 public class PlayerListener implements Listener {
     private final String permissionNode = "reserves";
 
-    private LinkedList<Player> playerJoinOrder = new LinkedList<Player>();
+    public final LinkedList<Player> playerJoinOrder = new LinkedList<Player>();
     
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
