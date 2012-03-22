@@ -36,10 +36,11 @@ public class Reserves extends BukkitUtilJavaPlugin {
 	this.getServer().getPluginManager().registerEvents(listener, this);
 	
 	// Add any already logged in players to avoid kick invulnerability.
-	Player[] players = this.getServer().getOnlinePlayers();
 	listener.playerJoinOrder.clear();
+	Player[] players = this.getServer().getOnlinePlayers();
 	for(Player player : players)
 	    listener.playerJoinOrder.add(player);
+	
 	log(Level.INFO, "Enabled.");
     }
 }
