@@ -34,6 +34,8 @@ public class Reserves extends BukkitUtilJavaPlugin {
     @Override
     public void onEnable() {
 	this.getServer().getPluginManager().registerEvents(listener, this);
+	
+	// Add any already logged in players to avoid kick invulnerability.
 	Player[] players = this.getServer().getOnlinePlayers();
 	for(Player player : players)
 	    listener.playerJoinOrder.add(player);
