@@ -4,6 +4,7 @@ import java.util.logging.Level;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import bukkitutil.BukkitUtilJavaPlugin;
 
@@ -13,7 +14,7 @@ import bukkitutil.BukkitUtilJavaPlugin;
  * @author Klezst
  */
 public class Reserves extends BukkitUtilJavaPlugin {
-    private PlayerListener listener = new PlayerListener();
+    private final PlayerListener listener = new PlayerListener();
     
     public Reserves() {
 	super("[Reserves]");
@@ -33,6 +34,9 @@ public class Reserves extends BukkitUtilJavaPlugin {
     @Override
     public void onEnable() {
 	this.getServer().getPluginManager().registerEvents(listener, this);
+	Player[] players = this.getServer().getOnlinePlayers();
+	for(Player player : players)
+	    listener.playerJoinOrder.add(player);
 	log(Level.INFO, "Enabled.");
     }
 }
