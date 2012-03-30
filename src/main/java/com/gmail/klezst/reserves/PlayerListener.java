@@ -34,36 +34,36 @@ import org.bukkit.event.player.PlayerQuitEvent;
  * @since 1.0.0
  */
 public class PlayerListener implements Listener {
-    private final String permissionNode = "reserves";
+	private final String permissionNode = "reserves";
 
-    public final LinkedList<Player> playerJoinOrder = new LinkedList<Player>();
-    
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-	// Used to determine which player has been on the longest.
-	// We cannot check for reservation permission here, in case permissions are changed while the player is logged in.
-	playerJoinOrder.add(event.getPlayer());
-    }
+	public final LinkedList<Player> playerJoinOrder = new LinkedList<Player>();
+	
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		// Used to determine which player has been on the longest.
+		// We cannot check for reservation permission here, in case permissions are changed while the player is logged in.
+		playerJoinOrder.add(event.getPlayer());
+	}
 
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-	playerJoinOrder.remove(event.getPlayer());
-    }
+	@EventHandler
+	public void onPlayerQuit(PlayerQuitEvent event) {
+		playerJoinOrder.remove(event.getPlayer());
+	}
 
-    @EventHandler
-    public void onPlayerPreLogin(PlayerLoginEvent event) {
+	@EventHandler
+	public void onPlayerPreLogin(PlayerLoginEvent event) {
 		// Determine, if the server is full && if the player has a reserved slot.
 		if (event.getResult() == PlayerLoginEvent.Result.KICK_FULL
 			&& Reserves.permissionHandler.has(event.getPlayer(), permissionNode)) {
 	
-		    // Kick the player who has been connected longest and does not have a slot reserved.
-		    for (Player player : playerJoinOrder) {
+			// Kick the player who has been connected longest and does not have a slot reserved.
+			for (Player player : playerJoinOrder) {
 				if (!Reserves.permissionHandler.has(player, permissionNode)) {
-				    player.kickPlayer("Sorry, the server is full; a player with a reserved slot logged in.");
-				    event.allow(); // Allow the connecting player to join the server despite that it was full.
-				    break;
+					player.kickPlayer("Sorry, the server is full; a player with a reserved slot logged in.");
+					event.allow(); // Allow the connecting player to join the server despite that it was full.
+					break;
 				}
-		    }
+			}
 		}
-    }
+	}
 };

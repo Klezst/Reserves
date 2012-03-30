@@ -45,52 +45,52 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class Reserves extends JavaPlugin {
 
-    public static Permission permissionHandler = null;
-    
-    public final Logger log = Logger.getLogger("Minecraft.Reserves");
-    private final PlayerListener listener = new PlayerListener();
-    private String tag = "";
-    
-    public Reserves() {
-    	this("[Reserves]");
-    }
-    
-    private Reserves(String tag) {
-    	this.tag = new StringBuilder(tag).append(" ").toString();
-    }
-    
-    private void log(Level level, String message) {
-    	log.log(level, new StringBuilder(tag).append(message).toString());
-    }
+	public static Permission permissionHandler = null;
+	
+	public final Logger log = Logger.getLogger("Minecraft.Reserves");
+	private final PlayerListener listener = new PlayerListener();
+	private String tag = "";
+	
+	public Reserves() {
+		this("[Reserves]");
+	}
+	
+	private Reserves(String tag) {
+		this.tag = new StringBuilder(tag).append(" ").toString();
+	}
+	
+	private void log(Level level, String message) {
+		log.log(level, new StringBuilder(tag).append(message).toString());
+	}
    
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd,
-	    String commandLabel, String[] args) {
-    	return false;
-    }
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd,
+		String commandLabel, String[] args) {
+		return false;
+	}
 
-    @Override
-    public void onDisable() {
-    	log(Level.INFO, "Disabled");
-    }
+	@Override
+	public void onDisable() {
+		log(Level.INFO, "Disabled");
+	}
 
-    @Override
-    public void onEnable() {
-    	
-    	extractLicense();
-    	
-    	Plugin vaultCandidate = this.getServer().getPluginManager().getPlugin("Vault");
-    	if(vaultCandidate == null || !(vaultCandidate instanceof Vault)) {
-		    log(Level.SEVERE, "Vault is not installed.");
-		    this.getServer().getPluginManager().disablePlugin(this);
-    	}
-    	
-        RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-        permissionHandler = rsp.getProvider();
-    	if(permissionHandler == null) {
-		    log(Level.SEVERE, "Could not find a permissions system.");
-		    this.getServer().getPluginManager().disablePlugin(this);
-    	}
+	@Override
+	public void onEnable() {
+		
+		extractLicense();
+		
+		Plugin vaultCandidate = this.getServer().getPluginManager().getPlugin("Vault");
+		if(vaultCandidate == null || !(vaultCandidate instanceof Vault)) {
+			log(Level.SEVERE, "Vault is not installed.");
+			this.getServer().getPluginManager().disablePlugin(this);
+		}
+		
+		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+		permissionHandler = rsp.getProvider();
+		if(permissionHandler == null) {
+			log(Level.SEVERE, "Could not find a permissions system.");
+			this.getServer().getPluginManager().disablePlugin(this);
+		}
 		
 		this.getServer().getPluginManager().registerEvents(listener, this);
 		
@@ -98,10 +98,10 @@ public class Reserves extends JavaPlugin {
 		listener.playerJoinOrder.clear();
 		Player[] players = this.getServer().getOnlinePlayers();
 		for(Player player : players)
-		    listener.playerJoinOrder.add(player);
+			listener.playerJoinOrder.add(player);
 		
 		log(Level.INFO, "Enabled.");
-    }
+	}
 
 	private void extractLicense() {
 		File destF = new File(this.getDataFolder(), "LICENSE.txt");
@@ -121,8 +121,8 @@ public class Reserves extends JavaPlugin {
 				dest.close();
 				
 			} catch (IOException e) {
-			    log(Level.SEVERE, "Error extracting resources.");
-			    e.printStackTrace();
+				log(Level.SEVERE, "Error extracting resources.");
+				e.printStackTrace();
 			}
 		}
 	}
